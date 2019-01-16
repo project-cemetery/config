@@ -8,6 +8,9 @@ export {
 export {
   default as FileConfiguration,
 } from './configurations/FileConfiguration'
+export {
+  default as ExternalConfiguration,
+} from './configurations/ExternalConfiguration'
 
 export { default as ParseFile } from './configurations/fileParsers/ParseFile'
 export { default as jsonParse } from './configurations/fileParsers/jsonParse'

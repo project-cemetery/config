@@ -1,6 +1,6 @@
 {
   "name": "@solid-soda/config",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
@@ -36,7 +36,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "lint-staged && yarn test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -44,7 +44,6 @@
     "*.ts": [
       "yarn pretty",
       "yarn lint",
-      "yarn test",
       "git add"
     ]
   },
