@@ -1,0 +1,5 @@
+{
+  "appEnv": ["production", "development"],
+  "count": 12,
+  "allow": true
+}

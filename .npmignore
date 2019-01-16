@@ -1,0 +1,9 @@
+node_modules/
+lib/
+tsconfig.json
+.travis.yml
+yarn.lock
+tslint.json
+jest.config.js
+**/__tests__/*
+jest.config.js
