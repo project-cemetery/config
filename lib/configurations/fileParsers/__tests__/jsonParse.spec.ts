@@ -10,9 +10,9 @@ describe('jsonParse', () => {
   test('should be parse flat json', () => {
     const dict = jsonParse(getPath('flat.json'))
 
-    expect(dict['count']).toBe(12)
-    expect(dict['allow']).toBeTruthy()
-    expect(dict['appEnv']).toBe('production')
+    expect(dict.count).toBe(12)
+    expect(dict.allow).toBeTruthy()
+    expect(dict.appEnv).toBe('production')
   })
 
   test('shpuld throw error on array json', () => {

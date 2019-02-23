@@ -6,9 +6,9 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "prepare": "yarn build",
-    "ci": "yarn test && yarn s lint",
+    "ci": "yarn test && yarn types && yarn s lint",
     "test": "jest",
-    "types": "tsc --noEmit lib",
+    "types": "tsc --noEmit",
     "s": "yarn soda"
   },
   "dependencies": {
@@ -17,7 +17,7 @@
     "tsoption": "^0.7.0"
   },
   "devDependencies": {
-    "@solid-soda/scripts": "^1.0.6",
+    "@solid-soda/scripts": "^1.0.7",
     "@types/jest": "^23.3.12",
     "@types/node": "^10.12.18",
     "jest": "^23.6.0",
@@ -27,7 +27,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "lint-staged && yarn test && yarn types",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
