@@ -1,3 +1,3 @@
-export default interface ConfigDict {
+export interface ConfigDict {
   [key: string]: string | undefined
 }

@@ -1,9 +1,9 @@
 import { Option } from 'tsoption'
 
-import Configuration from './Configuration'
-import dateIsValid from './helpers/dateIsValid'
+import { Configuration } from './Configuration'
+import { dateIsValid } from './helpers/dateIsValid'
 
-export default abstract class AbstractConfiguration implements Configuration {
+export abstract class AbstractConfiguration implements Configuration {
   public abstract get(key: string): Option<string>
 
   public getString = (key: string) => this.get(key)

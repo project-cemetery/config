@@ -1,1 +1,1 @@
-export default (d: Date) => !isNaN(d.getTime())
+export const dateIsValid = (d: Date) => !isNaN(d.getTime())

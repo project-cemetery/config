@@ -1,17 +1,14 @@
 import * as fs from 'fs'
 
-import FileParser from './ParseFile'
-import ParsingFailedException from './ParsingFailedException'
+import { ParseFile } from './ParseFile'
+import { ParsingFailedException } from './ParsingFailedException'
 
 const acceptedValueTypes = ['number', 'boolean', 'string', 'undefined']
 
-const isArray = (data: any) =>
-  ['map', 'filter'].every(method => typeof data[method] !== 'undefined')
-
-const jsonParse: FileParser = filePath => {
+export const jsonParse: ParseFile = filePath => {
   const data = JSON.parse(fs.readFileSync(filePath).toString())
 
-  if (typeof data !== 'object' || isArray(data)) {
+  if (typeof data !== 'object' || Array.isArray(data)) {
     throw new ParsingFailedException(filePath, 'json must contain only object')
   }
 
@@ -29,5 +26,3 @@ const jsonParse: FileParser = filePath => {
 
   return data
 }
-
-export default jsonParse

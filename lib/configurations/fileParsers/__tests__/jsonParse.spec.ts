@@ -1,12 +1,10 @@
 import * as path from 'path'
 
-import jsonParse from '../jsonParse'
-import ParsingFailedException from '../ParsingFailedException'
+import { jsonParse } from '../jsonParse'
+import { ParsingFailedException } from '../ParsingFailedException'
 
 const getPath = (filename: string) =>
   path.resolve(__dirname, './examples/', filename)
-
-// tslint:disable:no-string-literal
 
 describe('jsonParse', () => {
   test('should be parse flat json', () => {

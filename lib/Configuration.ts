@@ -1,6 +1,6 @@
 import { Option } from 'tsoption'
 
-export default interface Configuration {
+export interface Configuration {
   get(key: string): Option<string>
   getString(key: string): Option<string>
   getNumber(key: string): Option<number>

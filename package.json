@@ -6,11 +6,10 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "prepare": "yarn build",
-    "ci": "yarn test && yarn lint",
+    "ci": "yarn test && yarn s lint",
     "test": "jest",
-    "lint": "tslint {lib}/**/*.ts -c tslint.json",
     "types": "tsc --noEmit lib",
-    "pretty": "prettier --write \"lib/**/*.ts\""
+    "s": "yarn soda"
   },
   "dependencies": {
     "change-case": "^3.1.0",
@@ -18,50 +17,33 @@
     "tsoption": "^0.7.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.2.1",
-    "@commitlint/config-conventional": "^7.1.2",
+    "@solid-soda/scripts": "^1.0.6",
     "@types/jest": "^23.3.12",
     "@types/node": "^10.12.18",
-    "cz-conventional-changelog": "2.1.0",
-    "husky": "^1.2.1",
     "jest": "^23.6.0",
-    "lint-staged": "^8.1.0",
-    "prettier": "^1.15.3",
     "rimraf": "^2.6.2",
     "ts-jest": "^23.10.5",
-    "tslint": "^5.12.0",
-    "tslint-config-prettier": "^1.17.0",
-    "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.2.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && yarn test",
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "yarn pretty",
-      "yarn lint",
+    "*.{ts,tsx,js,jsx}": [
+      "yarn soda lint"
+    ],
+    "*.{js,jsx,ts,tsx,css,json}": [
+      "yarn soda pretty",
       "git add"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "semi": false,
-    "trailingComma": "all",
-    "singleQuote": true
   },
   "publishConfig": {
     "access": "public"

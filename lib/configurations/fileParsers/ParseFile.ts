@@ -1,5 +1,3 @@
-import ConfigDict from '../../ConfigDict'
+import { ConfigDict } from '../../ConfigDict'
 
-type ParseFile = (filename: string) => ConfigDict
-
-export default ParseFile
+export type ParseFile = (filename: string) => ConfigDict

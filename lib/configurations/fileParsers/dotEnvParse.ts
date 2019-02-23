@@ -1,9 +1,7 @@
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 
-import FileParser from './ParseFile'
+import { ParseFile } from './ParseFile'
 
-const dotEnvParse: FileParser = filePath =>
+export const dotEnvParse: ParseFile = filePath =>
   dotenv.parse(fs.readFileSync(filePath))
-
-export default dotEnvParse

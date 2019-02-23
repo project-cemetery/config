@@ -1,4 +1,4 @@
-import dateIsValid from '../dateIsValid'
+import { dateIsValid } from '../dateIsValid'
 
 describe('dateIsValid', () => {
   test('should return false on empty string', () => {

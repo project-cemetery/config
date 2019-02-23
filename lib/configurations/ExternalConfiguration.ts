@@ -1,9 +1,9 @@
 import { Option } from 'tsoption'
 
-import AbstractConfiguration from '../AbstractConfiguration'
-import ConfigDict from '../ConfigDict'
+import { AbstractConfiguration } from '../AbstractConfiguration'
+import { ConfigDict } from '../ConfigDict'
 
-export default class ExternalConfiguration extends AbstractConfiguration {
+export class ExternalConfiguration extends AbstractConfiguration {
   public constructor(
     private readonly configDict: ConfigDict,
     private readonly envKey: string,

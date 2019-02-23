@@ -1,4 +1,4 @@
-export default class ParsingFailedException extends Error {
+export class ParsingFailedException extends Error {
   public readonly filePath: string
 
   public constructor(filePath: string, message?: string, failedKey?: string) {

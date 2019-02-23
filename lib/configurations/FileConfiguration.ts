@@ -1,10 +1,10 @@
 import { Option } from 'tsoption'
 
-import AbstractConfiguration from '../AbstractConfiguration'
-import ConfigDict from '../ConfigDict'
-import ParseFile from './fileParsers/ParseFile'
+import { AbstractConfiguration } from '../AbstractConfiguration'
+import { ConfigDict } from '../ConfigDict'
+import { ParseFile } from './fileParsers/ParseFile'
 
-export default class FileConfiguration extends AbstractConfiguration {
+export class FileConfiguration extends AbstractConfiguration {
   private readonly configDict: ConfigDict
 
   public constructor(filePath: string, fileParse: ParseFile) {
