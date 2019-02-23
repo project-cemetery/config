@@ -9,7 +9,8 @@
     "ci": "yarn test && yarn types && yarn s lint",
     "test": "jest",
     "types": "tsc --noEmit",
-    "s": "yarn soda"
+    "s": "yarn soda",
+    "postinstall": "yarn soda post-install"
   },
   "dependencies": {
     "change-case": "^3.1.0",
@@ -17,7 +18,7 @@
     "tsoption": "^0.7.0"
   },
   "devDependencies": {
-    "@solid-soda/scripts": "^1.0.7",
+    "@solid-soda/scripts": "^1.1.2",
     "@types/jest": "^23.3.12",
     "@types/node": "^10.12.18",
     "jest": "^23.6.0",
@@ -27,23 +28,9 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && yarn test && yarn types",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "pre-commit": "yarn soda lint-staged && yarn test && yarn types",
+      "commit-msg": "yarn soda commitlint"
     }
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "yarn soda lint"
-    ],
-    "*.{js,jsx,ts,tsx,css,json}": [
-      "yarn soda pretty",
-      "git add"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
   },
   "publishConfig": {
     "access": "public"
