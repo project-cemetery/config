@@ -2,13 +2,13 @@
 
 Provides several classes to help you find, load, combine, autofill and validate configuration values of any kind
 
-## Instalation
+## Installation
 
 `yarn add @solid-soda/config`
 
 ## Basics
 
-Any configuration implements `Configuration` interface.
+Every configuration implements `Configuration` interface.
 
 > `@solid-soda/config` uses [tsoption](add_link) for nullable values
 
@@ -35,11 +35,11 @@ interface Configuration {
 
 ## Load configs
 
-Library provides some classes for comfortable loading configs from different sources.
+Library provides classes for comfortable loading of configs from different sources.
 
 #### DotEnvConfiguration
 
-It uses `.env` file to load configuration. Build over great [dotenv](add_link) lib.
+uses `.env` file to load configuration. Built over great [dotenv](add_link) lib.
 
 Example:
 ```js
@@ -50,7 +50,7 @@ const config = new DotEnvConfiguration('./configs/.env')
 
 #### EnvConfiguraton
 
-It uses `process.env` to load configuration.
+uses `process.env` to load configuration.
 
 Example:
 ```js
@@ -61,7 +61,7 @@ const config = new EnvConfiguration()
 
 #### ExternalConfiguration
 
-It uses plain object for configuration source.
+uses plain object as configuration source.
 
 ```js
 import { ExternalConfiguration } from '@solid-soda/config'
@@ -74,7 +74,7 @@ const config = new ExternalConfiguration({
 
 #### FileConfiguration
 
-It loads any file as configuration. You must pass `fileParse` as second argument to parse file.
+can accept any file as configuration. You must pass `fileParse` as second argument to parse file.
 
 ```js
 import { FileConfiguration, jsonParse } from '@solid-soda/config'
@@ -86,7 +86,7 @@ const config = new FileConfiguration('./configs/params.json', jsonParse)
 
 + `jsonParse`
 
-Also you can create the custom parser. It must be a function `(file: stirng) => ConfigDict`, where ConfigDict is object with string keys and string or undefined values.
+Also you can create the custom parser. It must be a function `(file: stirng) => ConfigDict`, where `ConfigDict` is object with string keys and string or undefined values.
 
 ### Custom configuration
 
@@ -94,7 +94,7 @@ Of course, you can create the custom Configuration. Just implement `Configuratio
 
 Also, you can extend helper class `AbstractConfiguration` and implement only `get` and `isDev` methods.
 
-The following configuration has no any values and always returns empty `Option`.
+The following configuration has no values and always returns empty `Option`.
 ```js
 
 import { AbstractConfiguration } from '@solid-soda/config'
@@ -121,7 +121,7 @@ Work in progress
 
 ## Real world example
 
-In example app we want use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create the simple factory function:
+In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
 
 ```js
 import { DotEnvConfiguration, EnvConfiguraton } from '@solid-soda/config'
@@ -139,4 +139,4 @@ export const getConfig = () => {
 }
 ```
 
-That is all. We can use `getConfig` in any place of our application, or pass the result to DI container, or something else.
+That is all. We can use `getConfig` in any place of our application, or pass the result to DI container, etc.
