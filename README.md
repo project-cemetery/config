@@ -1,10 +1,45 @@
 # @solid-soda/config
 
-Provides several classes to help you find, load, combine, autofill and validate configuration values of any kind
+Provides several classes to help you find, load, combine, autofill and validate configuration values of any kind.
+
+Why this library:
++ simple way to configure application
++ don't read or rewrite global object (like `process.env`) in an app
++ different configs for different environments
++ friendly for DI containers
 
 ## Installation
 
 `yarn add @solid-soda/config`
+
+## TL;DR
+
+In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
+
+```js
+import { DotEnvConfiguration, EnvConfiguraton } from '@solid-soda/config'
+
+function isDev() {
+  return process.env.NODE_ENV === 'development'
+}
+
+export const getConfig = () => {
+  if (isDev()) {
+    return new DotEnvConfiguration('../.env')
+  }
+
+  return new EnvConfiguraton()
+}
+```
+
+That is all. We can use `getConfig` in any place of our application, or pass the result to DI container, etc.
+
+```js
+import { getConfig } from './config'
+
+const secret = getConfig()
+  .get('APP_SECRET', 'DefaultSecret')
+```
 
 ## Basics
 
@@ -118,25 +153,3 @@ Work in progress
 
 Work in progress
 
-
-## Real world example
-
-In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
-
-```js
-import { DotEnvConfiguration, EnvConfiguraton } from '@solid-soda/config'
-
-function isDev() {
-  return process.env.NODE_ENV === 'development'
-}
-
-export const getConfig = () => {
-  if (isDev()) {
-    return new DotEnvConfiguration('../.env')
-  }
-
-  return new EnvConfiguraton()
-}
-```
-
-That is all. We can use `getConfig` in any place of our application, or pass the result to DI container, etc.
