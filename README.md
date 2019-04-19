@@ -45,7 +45,7 @@ const secret = getConfig()
 
 Every configuration implements `Configuration` interface.
 
-> `@solid-soda/config` uses [tsoption](add_link) for nullable values
+> `@solid-soda/config` uses [tsoption](https://github.com/bcherny/tsoption) for nullable values
 
 ```js
 import { Option } from 'tsoption'
@@ -74,7 +74,7 @@ Library provides classes for comfortable loading of configs from different sourc
 
 #### DotEnvConfiguration
 
-uses `.env` file to load configuration. Built over great [dotenv](add_link) lib.
+uses `.env` file to load configuration. Built over great [dotenv](https://github.com/motdotla/dotenv) lib.
 
 Example:
 ```js
