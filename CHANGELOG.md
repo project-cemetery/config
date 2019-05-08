@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [1.2.0](https://github.com/solid-soda/config/compare/v1.1.6...v1.2.0) (2019-05-08)
+
+
+### Features
+
+* add throwable methods ([39d656b](https://github.com/solid-soda/config/commit/39d656b))
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
 ## [1.1.6](https://github.com/solid-soda/config/compare/v1.1.5...v1.1.6) (2019-02-24)
 
 
