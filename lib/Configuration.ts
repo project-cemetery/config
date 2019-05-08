@@ -13,6 +13,12 @@ export interface Configuration {
   getBooleanOrElse(key: string, or: boolean): boolean
   getDateOrElse(key: string, or: Date): Date
 
+  getOrThrow(key: string): string
+  getStringOrThrow(key: string): string
+  getNumberOrThrow(key: string): number
+  getBooleanOrThrow(key: string): boolean
+  getDateOrThrow(key: string): Date
+
   isDev(): boolean
   isProd(): boolean
 }

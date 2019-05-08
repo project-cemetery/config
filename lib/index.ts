@@ -8,3 +8,4 @@ export { ExternalConfiguration } from './configurations/ExternalConfiguration'
 
 export { ParseFile } from './configurations/fileParsers/ParseFile'
 export { jsonParse } from './configurations/fileParsers/jsonParse'
+export { ParameterNotFound } from './exceptions/ParameterNotFound'
