@@ -2,8 +2,7 @@ import { Option } from 'tsoption'
 
 import { Configuration } from './Configuration'
 import { dateIsValid } from './helpers/dateIsValid'
-import { ParameterNotFound } from './exceptions/ParameterNotFound'
-import { getValueOrThrow } from 'helpers/getValueOfThrow'
+import { getValueOrThrow } from './helpers/getValueOfThrow'
 
 export abstract class AbstractConfiguration implements Configuration {
   public abstract get(key: string): Option<string>
