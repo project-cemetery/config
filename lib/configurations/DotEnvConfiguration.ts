@@ -1,5 +1,5 @@
 import * as changeCase from 'change-case'
-import { Option } from 'tsoption'
+import { Option } from 'nanoption'
 
 import { AbstractConfiguration } from '../AbstractConfiguration'
 import { ConfigDict } from '../ConfigDict'

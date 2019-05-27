@@ -14,7 +14,7 @@
   "dependencies": {
     "change-case": "^3.1.0",
     "dotenv": "^6.2.0",
-    "tsoption": "^0.7.0"
+    "nanoption": "^1.0.1"
   },
   "devDependencies": {
     "@solid-soda/scripts": "^1.1.3",

@@ -45,10 +45,10 @@ const secret = getConfig()
 
 Every configuration implements `Configuration` interface.
 
-> `@solid-soda/config` uses [tsoption](https://github.com/bcherny/tsoption) for nullable values
+> `@solid-soda/config` uses [nanoption](https://github.com/igorkamyshev/nanoption) for nullable values
 
 ```js
-import { Option } from 'tsoption'
+import { Option } from 'nanoption'
 
 interface Configuration {
   get(key: string): Option<string>

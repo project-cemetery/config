@@ -1,4 +1,4 @@
-import { Option } from 'tsoption'
+import { Option } from 'nanoption'
 
 import { ParameterNotFound } from '../exceptions/ParameterNotFound'
 

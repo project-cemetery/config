@@ -1,4 +1,4 @@
-import { Option } from 'tsoption'
+import { Option } from 'nanoption'
 
 export interface Configuration {
   get(key: string): Option<string>
