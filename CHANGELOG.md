@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0](https://github.com/solid-soda/config/compare/v1.2.1...v2.0.0) (2019-05-27)
+
+
+### Features
+
+* replace tsoption by nanoption ([83a17c5](https://github.com/solid-soda/config/commit/83a17c5))
+
+
+### BREAKING CHANGES
+
+* use smaller lib for options
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
 ## [1.2.1](https://github.com/solid-soda/config/compare/v1.2.0...v1.2.1) (2019-05-16)
 
 
