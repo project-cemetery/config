@@ -17,28 +17,18 @@ Why this library:
 In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
 
 ```js
-import { DotEnvConfiguration, EnvConfiguraton } from '@solid-soda/config'
+import { CommonConfiguraton } from '@solid-soda/config'
 
-function isDev() {
-  return process.env.NODE_ENV === 'development'
-}
-
-export const getConfig = () => {
-  if (isDev()) {
-    return new DotEnvConfiguration('../.env')
-  }
-
-  return new EnvConfiguraton()
-}
+export const config = new CommonConfiguraton('../.env')
 ```
 
-That is all. We can use `getConfig` in any place of our application, or pass the result to DI container, etc.
+That is all. We can use `config` in any place of our application, or pass the result to DI container, etc. It uses `DotEnvConfiguration` in dev-mode and `EnvConfiguration` in prod-mode.
 
 ```js
-import { getConfig } from './config'
+import { config } from './config'
 
-const secret = getConfig()
-  .get('APP_SECRET', 'DefaultSecret')
+const secret = config
+  .getOrElse('APP_SECRET', 'DefaultSecret')
 ```
 
 ## Basics
@@ -79,6 +69,18 @@ Method `*OrThrow` throws `ParameterNotFound` exception, if a value for the provi
 ## Load configs
 
 Library provides classes for comfortable loading of configs from different sources.
+
+#### CommonConfiguration
+
+uses `.env` file in dev-mode and `process.env` in prod-mode. Built over `DotEnvConfiguration` and `EnvConfiguraton`.
+
+Example:
+```js
+import { CommonConfiguration } from '@solid-soda/config'
+
+// pass .env file path for dev-mode, in prod-mode will be ignored
+const config = new CommonConfiguration('./configs/.env')
+```
 
 #### DotEnvConfiguration
 
