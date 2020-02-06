@@ -1,5 +1,5 @@
-import { AbstractConfiguration } from 'AbstractConfiguration';
-import { Configuration } from 'Configuration';
+import { AbstractConfiguration } from '../AbstractConfiguration';
+import { Configuration } from '../Configuration';
 import { DotEnvConfiguration } from './DotEnvConfiguration';
 import { EnvConfiguration } from './EnvConfiguration';
 
