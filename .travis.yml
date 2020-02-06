@@ -5,6 +5,7 @@ node_js:
 cache: yarn
 script: yarn ci
 deploy:
+  edge: true
   skip_cleanup: true
   provider: npm
   email: igor@kamyshev.me
