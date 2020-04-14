@@ -17,5 +17,6 @@ export class CommonComfiguration extends AbstractConfiguration {
   }
 
   isDev = () => this.configuration.isDev();
+
   get = (key: string) => this.configuration.get(key);
 }

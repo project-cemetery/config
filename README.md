@@ -1,12 +1,15 @@
 # @solid-soda/config
 
+[![Scripts sets up by @solid-soda/scripts v2.1.0](https://img.shields.io/static/v1?label=@solid-soda/scripts&message=2.1.0&color=75ddf4)](https://github.com/solid-soda/scripts)
+
 Provides several classes to help you find, load, combine, autofill and validate configuration values of any kind.
 
 Why this library:
-+ simple way to configure application
-+ don't read or rewrite global object (like `process.env`) in an app
-+ different configs for different environments
-+ friendly for DI containers
+
+- simple way to configure application
+- don't read or rewrite global object (like `process.env`) in an app
+- different configs for different environments
+- friendly for DI containers
 
 ## Installation
 
@@ -17,18 +20,17 @@ Why this library:
 In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
 
 ```js
-import { CommonConfiguraton } from '@solid-soda/config'
+import { CommonConfiguraton } from '@solid-soda/config';
 
-export const config = new CommonConfiguraton('../.env')
+export const config = new CommonConfiguraton('../.env');
 ```
 
 That is all. We can use `config` in any place of our application, or pass the result to DI container, etc. It uses `DotEnvConfiguration` in dev-mode and `EnvConfiguration` in prod-mode.
 
 ```js
-import { config } from './config'
+import { config } from './config';
 
-const secret = config
-  .getOrElse('APP_SECRET', 'DefaultSecret')
+const secret = config.getOrElse('APP_SECRET', 'DefaultSecret');
 ```
 
 ## Basics
@@ -75,11 +77,12 @@ Library provides classes for comfortable loading of configs from different sourc
 uses `.env` file in dev-mode and `process.env` in prod-mode. Built over `DotEnvConfiguration` and `EnvConfiguraton`.
 
 Example:
+
 ```js
-import { CommonConfiguration } from '@solid-soda/config'
+import { CommonConfiguration } from '@solid-soda/config';
 
 // pass .env file path for dev-mode, in prod-mode will be ignored
-const config = new CommonConfiguration('./configs/.env')
+const config = new CommonConfiguration('./configs/.env');
 ```
 
 #### DotEnvConfiguration
@@ -87,10 +90,11 @@ const config = new CommonConfiguration('./configs/.env')
 uses `.env` file to load configuration. Built over great [dotenv](https://github.com/motdotla/dotenv) lib.
 
 Example:
-```js
-import { DotEnvConfiguration } from '@solid-soda/config'
 
-const config = new DotEnvConfiguration('./configs/.env')
+```js
+import { DotEnvConfiguration } from '@solid-soda/config';
+
+const config = new DotEnvConfiguration('./configs/.env');
 ```
 
 #### EnvConfiguraton
@@ -98,10 +102,11 @@ const config = new DotEnvConfiguration('./configs/.env')
 uses `process.env` to load configuration.
 
 Example:
-```js
-import { EnvConfiguration } from '@solid-soda/config'
 
-const config = new EnvConfiguration()
+```js
+import { EnvConfiguration } from '@solid-soda/config';
+
+const config = new EnvConfiguration();
 ```
 
 #### ExternalConfiguration
@@ -109,12 +114,12 @@ const config = new EnvConfiguration()
 uses plain object as configuration source.
 
 ```js
-import { ExternalConfiguration } from '@solid-soda/config'
+import { ExternalConfiguration } from '@solid-soda/config';
 
 const config = new ExternalConfiguration({
   apiToken: 'jkfdshfk323.fjkhdksf.aodsa34',
   applySecurity: true,
-})
+});
 ```
 
 #### FileConfiguration
@@ -122,14 +127,14 @@ const config = new ExternalConfiguration({
 can accept any file as configuration. You must pass `fileParse` as second argument to parse file.
 
 ```js
-import { FileConfiguration, jsonParse } from '@solid-soda/config'
+import { FileConfiguration, jsonParse } from '@solid-soda/config';
 
-const config = new FileConfiguration('./configs/params.json', jsonParse)
+const config = new FileConfiguration('./configs/params.json', jsonParse);
 ```
 
 ##### Available parsers
 
-+ `jsonParse`
+- `jsonParse`
 
 Also you can create the custom parser. It must be a function `(file: stirng) => ConfigDict`, where `ConfigDict` is object with string keys and string or undefined values.
 
@@ -140,6 +145,7 @@ Of course, you can create the custom Configuration. Just implement `Configuratio
 Also, you can extend helper class `AbstractConfiguration` and implement only `get` and `isDev` methods.
 
 The following configuration has no values and always returns empty `Option`.
+
 ```js
 
 import { AbstractConfiguration } from '@solid-soda/config'
@@ -162,4 +168,3 @@ Work in progress
 ## Autofill configs
 
 Work in progress
-

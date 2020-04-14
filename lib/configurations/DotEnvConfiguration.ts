@@ -1,23 +1,23 @@
-import * as changeCase from 'change-case'
-import { Option } from 'nanoption'
+import * as changeCase from 'change-case';
+import { Option } from 'nanoption';
 
-import { AbstractConfiguration } from '../AbstractConfiguration'
-import { ConfigDict } from '../ConfigDict'
-import { dotEnvParse } from './fileParsers/dotEnvParse'
+import { AbstractConfiguration } from '../AbstractConfiguration';
+import { ConfigDict } from '../ConfigDict';
+import { dotEnvParse } from './fileParsers/dotEnvParse';
 
 export class DotEnvConfiguration extends AbstractConfiguration {
-  private readonly configDict: ConfigDict
+  private readonly configDict: ConfigDict;
 
   public constructor(filePath: string) {
-    super()
-    this.configDict = dotEnvParse(filePath)
+    super();
+    this.configDict = dotEnvParse(filePath);
   }
 
   public get = (key: string) =>
-    Option.of(this.configDict[changeCase.constantCase(key)])
+    Option.of(this.configDict[changeCase.constantCase(key)]);
 
   public isDev = () =>
     this.getString('nodeEnv')
-      .map(env => env === 'development')
-      .getOrElse(false)
+      .map((env) => env === 'development')
+      .getOrElse(false);
 }
