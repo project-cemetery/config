@@ -1,1 +1,1 @@
-export const dateIsValid = (d: Date) => !isNaN(d.getTime())
+export const dateIsValid = (d: Date) => !Number.isNaN(d.getTime());

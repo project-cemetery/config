@@ -1,3 +1,3 @@
-import { ConfigDict } from '../../ConfigDict'
+import { ConfigDict } from '../../ConfigDict';
 
-export type ParseFile = (filename: string) => ConfigDict
+export type ParseFile = (filename: string) => ConfigDict;
