@@ -1,3 +1,4 @@
+version: 2.1
 orbs:
   yarn-berry: checkmoney/yarn-berry@1.0.0
   npm: checkmoney/npm@1.1.0
