@@ -1,24 +1,37 @@
 import { Option } from 'nanoption';
 
-export interface Configuration {
-  get(key: string): Option<string>;
-  getString(key: string): Option<string>;
-  getNumber(key: string): Option<number>;
-  getBoolean(key: string): Option<boolean>;
-  getDate(key: string): Option<Date>;
+export abstract class Configuration {
+  abstract get(key: string): Option<string>;
 
-  getOrElse(key: string, or: string): string;
-  getStringOrElse(key: string, or: string): string;
-  getNumberOrElse(key: string, or: number): number;
-  getBooleanOrElse(key: string, or: boolean): boolean;
-  getDateOrElse(key: string, or: Date): Date;
+  abstract getString(key: string): Option<string>;
 
-  getOrThrow(key: string): string;
-  getStringOrThrow(key: string): string;
-  getNumberOrThrow(key: string): number;
-  getBooleanOrThrow(key: string): boolean;
-  getDateOrThrow(key: string): Date;
+  abstract getNumber(key: string): Option<number>;
 
-  isDev(): boolean;
-  isProd(): boolean;
+  abstract getBoolean(key: string): Option<boolean>;
+
+  abstract getDate(key: string): Option<Date>;
+
+  abstract getOrElse(key: string, or: string): string;
+
+  abstract getStringOrElse(key: string, or: string): string;
+
+  abstract getNumberOrElse(key: string, or: number): number;
+
+  abstract getBooleanOrElse(key: string, or: boolean): boolean;
+
+  abstract getDateOrElse(key: string, or: Date): Date;
+
+  abstract getOrThrow(key: string): string;
+
+  abstract getStringOrThrow(key: string): string;
+
+  abstract getNumberOrThrow(key: string): number;
+
+  abstract getBooleanOrThrow(key: string): boolean;
+
+  abstract getDateOrThrow(key: string): Date;
+
+  abstract isDev(): boolean;
+
+  abstract isProd(): boolean;
 }
