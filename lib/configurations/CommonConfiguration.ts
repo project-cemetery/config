@@ -3,7 +3,7 @@ import { Configuration } from '../Configuration';
 import { DotEnvConfiguration } from './DotEnvConfiguration';
 import { EnvConfiguration } from './EnvConfiguration';
 
-export class CommonComfiguration extends AbstractConfiguration {
+export class CommonConfiguration extends AbstractConfiguration {
   private readonly configuration: Configuration;
 
   constructor(dotenvFilePath: string) {
