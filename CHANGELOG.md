@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/solid-soda/config/compare/v2.1.3...v2.2.0) (2020-04-27)
+
+### Features
+
+- interface become to class for DI tokens ([c61a31e](https://github.com/solid-soda/config/commit/c61a31e269935026e88fa8aa11dbba809e7b8cf9))
+
+### Bug Fixes
+
+- **common:** fix typo ([740e167](https://github.com/solid-soda/config/commit/740e1673932d8119e2458406f67653122523353f))
+
 ### [2.1.3](https://github.com/solid-soda/config/compare/v2.1.2...v2.1.3) (2020-04-14)
 
 ### [2.1.2](https://github.com/solid-soda/config/compare/v2.1.1...v2.1.2) (2020-02-06)
