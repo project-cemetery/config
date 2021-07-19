@@ -3,6 +3,7 @@
 import {
   Shape,
   Configuration,
+  ConfigurationGetter,
   ConfigEntry,
   UnknownPrimitiveEntry,
   PrimitiveConfigEntry,
@@ -101,6 +102,16 @@ export function createConfiguration(
       get asArray(): UnknownArrayConfigEntry {
         return {} as any;
       },
+      // TODO: test
+      get asNested(): ConfigurationGetter {
+        return {
+          key: getConfigByKey,
+          // TODO: write
+          shape(_: any) {
+            return {} as any;
+          },
+        };
+      },
     };
   }
 
@@ -111,7 +122,7 @@ export function createConfiguration(
   return {
     key: getConfigByKey,
     // TODO: write
-    shape: (_: any) => {
+    shape(_: any) {
       return {} as any;
     },
     // TODO: TEST

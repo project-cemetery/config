@@ -15,10 +15,12 @@ export type Shape = <
   mapper: (config: { [key in string]: ConfigEntry }) => T,
 ) => T;
 
-export interface Configuration {
+export interface ConfigurationGetter {
   key(key: string): ConfigEntry;
   shape: Shape;
+}
 
+export interface Configuration extends ConfigurationGetter {
   isDev: boolean;
   isProd: boolean;
 }
@@ -27,6 +29,7 @@ export interface ConfigEntry {
   value: UnknownPrimitiveEntry;
   asArray: UnknownArrayConfigEntry;
   asIs: unknown;
+  asNested: ConfigurationGetter;
 }
 
 export interface UnknownPrimitiveEntry {
