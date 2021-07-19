@@ -102,6 +102,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:18.0.1"
       ],
       [
+        "fast-check",
+        "npm:2.16.0"
+      ],
+      [
         "jest",
         "npm:25.3.0"
       ],
@@ -163,6 +167,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:2.20.2"],
             ["eslint-plugin-import-helpers", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:1.0.2"],
             ["eslint-plugin-unicorn", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:18.0.1"],
+            ["fast-check", "npm:2.16.0"],
             ["jest", "npm:25.3.0"],
             ["lint-staged", "npm:10.1.3"],
             ["nanoption", "npm:1.0.1"],
@@ -1035,6 +1040,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-import", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:2.20.2"],
             ["eslint-plugin-import-helpers", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:1.0.2"],
             ["eslint-plugin-unicorn", "virtual:efe0805e7c5f26edcb7d2c23e066b7720e4756a9a54ae49842dc3a3d433937fcf76f50f3ddd7222ae2d6b36c9ab5fb9389f0fb6062180f8072f01fb8dfc940f6#npm:18.0.1"],
+            ["fast-check", "npm:2.16.0"],
             ["jest", "npm:25.3.0"],
             ["lint-staged", "npm:10.1.3"],
             ["nanoption", "npm:1.0.1"],
@@ -3778,6 +3784,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/extsprintf-npm-1.3.0-61a92b324c-2.zip/node_modules/extsprintf/",
           "packageDependencies": [
             ["extsprintf", "npm:1.3.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["fast-check", [
+        ["npm:2.16.0", {
+          "packageLocation": "./.yarn/cache/fast-check-npm-2.16.0-50aab7ebaa-2.zip/node_modules/fast-check/",
+          "packageDependencies": [
+            ["fast-check", "npm:2.16.0"],
+            ["pure-rand", "npm:4.2.1"]
           ],
           "linkType": "HARD",
         }]
@@ -7444,6 +7460,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/punycode-npm-2.1.1-26eb3e15cf-2.zip/node_modules/punycode/",
           "packageDependencies": [
             ["punycode", "npm:2.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["pure-rand", [
+        ["npm:4.2.1", {
+          "packageLocation": "./.yarn/cache/pure-rand-npm-4.2.1-fbf8d128f6-2.zip/node_modules/pure-rand/",
+          "packageDependencies": [
+            ["pure-rand", "npm:4.2.1"]
           ],
           "linkType": "HARD",
         }]
