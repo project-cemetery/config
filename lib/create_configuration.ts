@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable prefer-const */
 
 import {
@@ -7,10 +8,11 @@ import {
   ConfigEntry,
   UnknownPrimitiveEntry,
   PrimitiveConfigEntry,
+  ArrayConfigEntry,
   UnknownArrayConfigEntry,
 } from './types';
 
-function createEntry<T>(
+function createPrimitiveEntry<T>(
   rawValue: unknown,
   customMapper: (value: unknown) => T,
   isEmpty: (rawValue: unknown, parsedValue: T) => boolean,
@@ -39,56 +41,95 @@ function createEntry<T>(
   };
 }
 
+function createArrayEntry<T>(
+  rawValue: unknown,
+  customMapper: (value: unknown) => T,
+  isEmpty: (rawValue: unknown, parsedValue: T) => boolean,
+): ArrayConfigEntry<T> {
+  let parsedValue: T[] = [];
+
+  if (Array.isArray(rawValue)) {
+    parsedValue = rawValue.map(customMapper);
+  } else if (typeof rawValue === 'string' && rawValue.includes(',')) {
+    parsedValue = rawValue.split(',').map(customMapper);
+  } else if (typeof rawValue === 'string' && rawValue.includes(';')) {
+    parsedValue = rawValue.split(';').map(customMapper);
+  } else if (typeof rawValue === 'string') {
+    parsedValue = [customMapper(rawValue)];
+  }
+
+  parsedValue = parsedValue.filter((value) => !isEmpty(rawValue, value));
+
+  const shouldSkipValue = parsedValue.length === 0;
+
+  return {
+    get orThrow() {
+      if (shouldSkipValue) {
+        throw new Error('hati');
+      }
+
+      return parsedValue;
+    },
+    get orEmpty() {
+      return parsedValue;
+    },
+    get nullable() {
+      if (shouldSkipValue) {
+        return null;
+      }
+      return parsedValue;
+    },
+  };
+}
+
 function checkEmpty(value: unknown) {
   return typeof value === 'undefined' || value === null || value === '';
+}
+
+function checkEmptyDate(value: unknown, dateValue: Date) {
+  return checkEmpty(value) || Number.isNaN(dateValue.valueOf());
+}
+
+function checkEmptyNumber(value: unknown, numericValue: number) {
+  return checkEmpty(value) || Number.isNaN(numericValue);
+}
+
+function toBoolean(value: unknown): boolean {
+  if (value === 'false') {
+    return false;
+  }
+
+  if (Number(value) === 0) {
+    return false;
+  }
+
+  return Boolean(value);
+}
+
+function toDate(value: unknown) {
+  return new Date(value as any);
+}
+
+function toNumber(value: unknown) {
+  return Number(value);
+}
+
+function toString(value: unknown) {
+  return String(value);
 }
 
 export function createConfiguration(
   record: Record<string, unknown>,
 ): Configuration {
-  function getValueEntry(key: string): UnknownPrimitiveEntry {
-    return {
-      get asBoolean(): PrimitiveConfigEntry<boolean> {
-        return createEntry(
-          record[key],
-          (value) => {
-            if (value === 'false') {
-              return false;
-            }
-
-            if (Number(value) === 0) {
-              return false;
-            }
-
-            return Boolean(value);
-          },
-          checkEmpty,
-        );
-      },
-      // TODO: TEST
-      get asDate(): PrimitiveConfigEntry<Date> {
-        return createEntry(
-          record[key],
-          (value) => new Date(value as any),
-          (value, dateValue) =>
-            checkEmpty(value) || Number.isNaN(dateValue.valueOf()),
-        );
-      },
-      // TODO: TEST
-      get asNumber(): PrimitiveConfigEntry<Number> {
-        return createEntry(
-          record[key],
-          Number,
-          (value, numbericValue) =>
-            checkEmpty(value) || Number.isNaN(numbericValue),
-        );
-      },
-      // TODO: TEST
-      get asString(): any {
-        return createEntry(record[key], String, checkEmpty);
-      },
-    };
-  }
+  const getConfigShape: Shape = (callback) =>
+    callback(
+      new Proxy(
+        {},
+        {
+          get: (_1, prop, _2) => getConfigByKey(prop as any),
+        },
+      ),
+    );
 
   function getConfigByKey(key: string): ConfigEntry {
     return {
@@ -96,20 +137,47 @@ export function createConfiguration(
         return record[key];
       },
       get value(): UnknownPrimitiveEntry {
-        return getValueEntry(key);
+        return {
+          get asBoolean(): PrimitiveConfigEntry<boolean> {
+            return createPrimitiveEntry(record[key], toBoolean, checkEmpty);
+          },
+          get asDate(): PrimitiveConfigEntry<Date> {
+            return createPrimitiveEntry(record[key], toDate, checkEmptyDate);
+          },
+          get asNumber(): PrimitiveConfigEntry<number> {
+            return createPrimitiveEntry(
+              record[key],
+              toNumber,
+              checkEmptyNumber,
+            );
+          },
+          get asString(): any {
+            return createPrimitiveEntry(record[key], toString, checkEmpty);
+          },
+        };
       },
-      // TODO: write
       get asArray(): UnknownArrayConfigEntry {
-        return {} as any;
+        return {
+          get ofNumber() {
+            return createArrayEntry(record[key], toNumber, checkEmptyNumber);
+          },
+          get ofBoolean() {
+            return createArrayEntry(record[key], toBoolean, checkEmpty);
+          },
+          get ofDate() {
+            return createArrayEntry(record[key], toDate, checkEmptyDate);
+          },
+          get ofString() {
+            return createArrayEntry(record[key], toString, checkEmpty);
+          },
+        };
       },
-      // TODO: test
       get asNested(): ConfigurationGetter {
         return {
-          key: getConfigByKey,
-          // TODO: write
-          shape(_: any) {
-            return {} as any;
-          },
+          key: (nestedKey) =>
+            createConfiguration(getConfigByKey(key).asIs as any).key(nestedKey),
+          shape: (config) =>
+            createConfiguration(getConfigByKey(key).asIs as any).shape(config),
         };
       },
     };
@@ -121,15 +189,10 @@ export function createConfiguration(
 
   return {
     key: getConfigByKey,
-    // TODO: write
-    shape(_: any) {
-      return {} as any;
-    },
-    // TODO: TEST
+    shape: getConfigShape,
     get isDev() {
       return env === 'development';
     },
-    // TODO: TEST
     get isProd() {
       return env === 'production';
     },

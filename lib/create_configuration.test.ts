@@ -190,17 +190,133 @@ describe('createConfiguration', () => {
             }),
           );
         });
-      });
 
-      test('should return false for empty values', () => {
-        fc.assert(
-          fc.property(emptyRecordArb, fc.string(), (record, key) => {
-            const config = createConfiguration(record);
+        test('should return false for empty values', () => {
+          fc.assert(
+            fc.property(emptyRecordArb, fc.string(), (record, key) => {
+              const config = createConfiguration(record);
 
+              expect(config.key(key).value.asDate.exists).toBeFalsy();
+            }),
+          );
+        });
+
+        test('should return false for exist non-date-like values', () => {
+          const recordWithInvalidDates = {
+            key1: 'invalid date',
+            key2: '2020-13-34',
+            key3: '15 января 2021',
+          };
+
+          const config = createConfiguration(recordWithInvalidDates);
+
+          for (const key of Object.keys(recordWithInvalidDates)) {
             expect(config.key(key).value.asDate.exists).toBeFalsy();
-          }),
-        );
+          }
+        });
       });
+    });
+
+    describe('#asNumber', () => {
+      const numbericStringOrb = fc.oneof(
+        fc.integer().map((date) => date.toString()),
+        fc.float().map((date) => date.toString()),
+      );
+
+      describe('#exists', () => {
+        test('should return true for exist numberic values', () => {
+          const recordArb = fc.object({
+            values: [numbericStringOrb, fc.integer(), fc.float()],
+            maxDepth: 0,
+          });
+
+          fc.assert(
+            fc.property(recordArb, (record) => {
+              const config = createConfiguration(record);
+
+              for (const key of Object.keys(record)) {
+                expect(config.key(key).value.asNumber.exists).toBeTruthy();
+              }
+            }),
+          );
+        });
+
+        test('should return false for empty values', () => {
+          fc.assert(
+            fc.property(emptyRecordArb, fc.string(), (record, key) => {
+              const config = createConfiguration(record);
+
+              expect(config.key(key).value.asDate.exists).toBeFalsy();
+            }),
+          );
+        });
+
+        test('should return false for exist non-numeric values', () => {
+          const recordWithInvalidDates = {
+            key1: 'fdsfds4343',
+            key2: '43543fdfd',
+            key3: 'gfdgfd',
+          };
+
+          const config = createConfiguration(recordWithInvalidDates);
+
+          for (const key of Object.keys(recordWithInvalidDates)) {
+            expect(config.key(key).value.asDate.exists).toBeFalsy();
+          }
+        });
+      });
+    });
+  });
+
+  describe('#asArray', () => {
+    describe('#ofBoolean', () => {
+      test('should return array of booleans with one value', () => {
+        const record = { key1: 'true' };
+
+        const config = createConfiguration(record);
+
+        expect(config.key('key1').asArray.ofBoolean.orThrow).toEqual([true]);
+      });
+
+      test('should return array of booleans with two values separated by comma', () => {
+        const record = { key1: 'true,false' };
+
+        const config = createConfiguration(record);
+
+        expect(config.key('key1').asArray.ofBoolean.orThrow).toEqual([
+          true,
+          false,
+        ]);
+      });
+
+      test('should return array of booleans with two values separated by semicolon', () => {
+        const record = { key1: 'true;false' };
+
+        const config = createConfiguration(record);
+
+        expect(config.key('key1').asArray.ofBoolean.orThrow).toEqual([
+          true,
+          false,
+        ]);
+      });
+    });
+  });
+
+  describe('#shape', () => {
+    test('should do something =)', () => {
+      const record = { key1: 'true', key2: 2 };
+
+      const config = createConfiguration(record);
+
+      const shape = config.shape(({ key1, key2, key3 }) => ({
+        key1: key1.value.asBoolean.orThrow,
+        key2: key2.value.asString.nullable,
+        key3: key3.value.asNumber.orDefault(12),
+      }));
+
+      expect(shape.key1).toBe(true);
+      expect(shape.key2).toBe('2');
+      expect(shape.key3).toBe(12);
     });
   });
 });

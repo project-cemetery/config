@@ -35,7 +35,7 @@ export interface ConfigEntry {
 export interface UnknownPrimitiveEntry {
   asBoolean: PrimitiveConfigEntry<boolean>;
   asDate: PrimitiveConfigEntry<Date>;
-  asNumber: PrimitiveConfigEntry<Number>;
+  asNumber: PrimitiveConfigEntry<number>;
   asString: PrimitiveConfigEntry<string>;
 }
 
