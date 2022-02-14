@@ -6,3 +6,6 @@ dev:
 
 fmt:
 	deno fmt --check
+
+lint:
+	deno lint

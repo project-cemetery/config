@@ -15,11 +15,11 @@ import {
 
 type ValueGetter = (key: string) => unknown;
 type ErrorHandler = (
-  error: ConfigurationException | ShapeConfigurationException,
+  error: ConfigurationException | ShapeConfigurationException
 ) => void;
 
 export function createConfiguration(
-  record: Record<string, unknown> | ValueGetter,
+  record: Record<string, unknown> | ValueGetter
 ): Configuration {
   const getConfigShape: Shape = (callback) => {
     const errors: Array<ShapeConfigurationException | ConfigurationException> =
@@ -29,10 +29,14 @@ export function createConfiguration(
       new Proxy(
         {},
         {
-          get: (_, prop, __) =>
-            getConfigByKey(prop as any, { onError: (err) => errors.push(err) }),
-        },
-      ),
+          get: (_, prop, __) => {
+            if (typeof prop === "symbol") {
+              throw new Error("Logic error");
+            }
+            return getConfigByKey(prop, { onError: (err) => errors.push(err) });
+          },
+        }
+      )
     );
 
     if (errors.length > 0) {
@@ -61,7 +65,7 @@ export function createConfiguration(
 
   function getConfigByKey(
     key: string,
-    { onError }: { onError?: ErrorHandler },
+    { onError }: { onError?: ErrorHandler }
   ): ConfigEntry {
     const value = getter(key);
 
@@ -142,15 +146,12 @@ export function createConfiguration(
         };
       },
       get asNested(): ConfigurationGetter {
+        // TODO: handle this case
+        // deno-lint-ignore no-explicit-any
+        const nestedConfig = getConfigByKey(key, { onError }).asIs as any;
         return {
-          get: (nestedKey) =>
-            createConfiguration(
-              getConfigByKey(key, { onError }).asIs as any,
-            ).get(nestedKey),
-          shape: (config) =>
-            createConfiguration(
-              getConfigByKey(key, { onError }).asIs as any,
-            ).shape(config),
+          get: (nestedKey) => createConfiguration(nestedConfig).get(nestedKey),
+          shape: (config) => createConfiguration(nestedConfig).shape(config),
         };
       },
     };
@@ -298,6 +299,8 @@ function toBoolean(value: unknown): boolean {
 }
 
 function toDate(value: unknown) {
+  // It'llbe checked later
+  // deno-lint-ignore no-explicit-any
   return new Date(value as any);
 }
 
