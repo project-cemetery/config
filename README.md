@@ -79,6 +79,15 @@ methods:
 - `.orThrow` returns entry or throws `ConfigurationExceptions` in case of absent
   entry;
 
+Example:
+
+```ts
+const config = createConfiguration({ PORT: "8080" });
+
+// appPort's value is 8080, it has type "number"
+const appPort = config.get("PORT").value.asNumber.orDefault(4000);
+```
+
 #### `.get(key).asArray`
 
 You can extract many pieces of config by particular key with this method:
@@ -105,6 +114,17 @@ next methods:
   case of absent entries;
 
 > `ArrayConfigEntry` will parse a string divided by commas and semicolons.
+
+Example:
+
+```ts
+const config = createConfiguration({
+  KAFKA_BROKERS: "br.kafka1.int:8080,br.kafka2.int:8080,br.kafka3.int:8080",
+});
+
+// brokers's value is ["br.kafka1.int:8080", "br.kafka2.int:8080", "br.kafka3.int:8080"]
+const brokers = config.get("KAFKA_BROKERS").asArray.ofString.orEmpty;
+```
 
 #### `.get(key).asNested`
 
