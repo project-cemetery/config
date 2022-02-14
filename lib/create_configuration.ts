@@ -2,7 +2,6 @@ import {
   ArrayConfigEntry,
   ConfigEntry,
   Configuration,
-  ConfigurationGetter,
   PrimitiveConfigEntry,
   Shape,
   UnknownArrayConfigEntry,
@@ -145,7 +144,7 @@ export function createConfiguration(
           },
         };
       },
-      get asNested(): ConfigurationGetter {
+      get asNested(): Configuration {
         // TODO: handle this case
         // deno-lint-ignore no-explicit-any
         const nestedConfig = getConfigByKey(key, { onError }).asIs as any;
