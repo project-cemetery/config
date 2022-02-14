@@ -15,11 +15,11 @@ import {
 
 type ValueGetter = (key: string) => unknown;
 type ErrorHandler = (
-  error: ConfigurationException | ShapeConfigurationException
+  error: ConfigurationException | ShapeConfigurationException,
 ) => void;
 
 export function createConfiguration(
-  record: Record<string, unknown> | ValueGetter
+  record: Record<string, unknown> | ValueGetter,
 ): Configuration {
   const getConfigShape: Shape = (callback) => {
     const errors: Array<ShapeConfigurationException | ConfigurationException> =
@@ -35,8 +35,8 @@ export function createConfiguration(
             }
             return getConfigByKey(prop, { onError: (err) => errors.push(err) });
           },
-        }
-      )
+        },
+      ),
     );
 
     if (errors.length > 0) {
@@ -65,7 +65,7 @@ export function createConfiguration(
 
   function getConfigByKey(
     key: string,
-    { onError }: { onError?: ErrorHandler }
+    { onError }: { onError?: ErrorHandler },
   ): ConfigEntry {
     const value = getter(key);
 
