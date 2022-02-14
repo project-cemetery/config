@@ -29,33 +29,33 @@ Deno.test(".value.asString.exists", () => {
 Deno.test(".value.asString.orDefault", () => {
   assertEquals(
     config.get("someString").value.asString.orDefault("DEFAULT"),
-    "value"
+    "value",
   );
   assertEquals(
     config.get("someNumber").value.asString.orDefault("DEFAULT"),
-    "1"
+    "1",
   );
   assertEquals(
     config.get("someNested").value.asString.orDefault("DEFAULT"),
-    '{"value":1}'
+    '{"value":1}',
   );
   assertEquals(
     config.get("thruthy").value.asString.orDefault("DEFAULT"),
-    "true"
+    "true",
   );
   assertEquals(
     config.get("falsy").value.asString.orDefault("DEFAULT"),
-    "false"
+    "false",
   );
 
   // non-sxists
   assertEquals(
     config.get("somethingOther").value.asString.orDefault("DEFAULT 1"),
-    "DEFAULT 1"
+    "DEFAULT 1",
   );
   assertEquals(
     config.get("somethingOther").value.asString.orDefault("DEFAULT 2"),
-    "DEFAULT 2"
+    "DEFAULT 2",
   );
 });
 
@@ -68,6 +68,6 @@ Deno.test(".value.asString.orThrow", () => {
   assertEquals(config.get("someString").value.asString.orThrow, "value");
   assertThrows(
     () => config.get("somethingOther").value.asString.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
 });

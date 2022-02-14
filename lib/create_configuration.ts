@@ -1,12 +1,12 @@
 import {
-  Shape,
+  ArrayConfigEntry,
+  ConfigEntry,
   Configuration,
   ConfigurationGetter,
-  ConfigEntry,
-  UnknownPrimitiveEntry,
   PrimitiveConfigEntry,
-  ArrayConfigEntry,
+  Shape,
   UnknownArrayConfigEntry,
+  UnknownPrimitiveEntry,
 } from "./types.ts";
 import {
   ConfigurationException,
@@ -15,11 +15,11 @@ import {
 
 type ValueGetter = (key: string) => unknown;
 type ErrorHandler = (
-  error: ConfigurationException | ShapeConfigurationException
+  error: ConfigurationException | ShapeConfigurationException,
 ) => void;
 
 export function createConfiguration(
-  record: Record<string, unknown> | ValueGetter
+  record: Record<string, unknown> | ValueGetter,
 ): Configuration {
   const getConfigShape: Shape = (callback) => {
     const errors: Array<ShapeConfigurationException | ConfigurationException> =
@@ -31,8 +31,8 @@ export function createConfiguration(
         {
           get: (_, prop, __) =>
             getConfigByKey(prop as any, { onError: (err) => errors.push(err) }),
-        }
-      )
+        },
+      ),
     );
 
     if (errors.length > 0) {
@@ -61,7 +61,7 @@ export function createConfiguration(
 
   function getConfigByKey(
     key: string,
-    { onError }: { onError?: ErrorHandler }
+    { onError }: { onError?: ErrorHandler },
   ): ConfigEntry {
     const value = getter(key);
 
@@ -145,11 +145,11 @@ export function createConfiguration(
         return {
           get: (nestedKey) =>
             createConfiguration(
-              getConfigByKey(key, { onError }).asIs as any
+              getConfigByKey(key, { onError }).asIs as any,
             ).get(nestedKey),
           shape: (config) =>
             createConfiguration(
-              getConfigByKey(key, { onError }).asIs as any
+              getConfigByKey(key, { onError }).asIs as any,
             ).shape(config),
         };
       },

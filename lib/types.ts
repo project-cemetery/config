@@ -10,9 +10,9 @@ export type Shape = <
     | Array<Date>
     | Array<boolean>
     | Array<number>
-  >
+  >,
 >(
-  mapper: (config: { [key in string]: ConfigEntry }) => T
+  mapper: (config: { [key in string]: ConfigEntry }) => T,
 ) => T;
 
 export interface ConfigurationGetter {

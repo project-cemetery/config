@@ -36,11 +36,11 @@ Deno.test(".value.asNumber.orDefault", () => {
   // non-sxists
   assertEquals(
     config.get("somethingOther").value.asNumber.orDefault(13371),
-    13371
+    13371,
   );
   assertEquals(
     config.get("somethingOther").value.asNumber.orDefault(13372),
-    13372
+    13372,
   );
 });
 
@@ -54,10 +54,10 @@ Deno.test(".value.asNumber.orThrow", () => {
   assertEquals(config.get("someNumber").value.asNumber.orThrow, 1);
   assertThrows(
     () => config.get("someString").value.asNumber.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
   assertThrows(
     () => config.get("somethingOther").value.asNumber.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
 });

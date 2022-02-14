@@ -25,6 +25,6 @@ Deno.test("shape, many execptions", () => {
         host: someString.value.asString.orThrow,
         port: someNumber.value.asNumber.orThrow,
       })),
-    ShapeConfigurationException
+    ShapeConfigurationException,
   );
 });

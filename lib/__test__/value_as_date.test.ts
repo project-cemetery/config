@@ -35,42 +35,42 @@ Deno.test(".value.asDate.orDefault", () => {
 
   assertEquals(
     config.get("someISODate").value.asDate.orDefault(defDate1),
-    new Date("2022-02-14T14:48:32.439Z")
+    new Date("2022-02-14T14:48:32.439Z"),
   );
   assertEquals(
     config.get("someNumber").value.asDate.orDefault(defDate1),
-    new Date(1)
+    new Date(1),
   );
 
   assertEquals(
     config.get("thruthy").value.asDate.orDefault(defDate1),
-    defDate1
+    defDate1,
   );
   assertEquals(config.get("falsy").value.asDate.orDefault(defDate1), defDate1);
   assertEquals(
     config.get("someString").value.asDate.orDefault(defDate1),
-    defDate1
+    defDate1,
   );
   assertEquals(
     config.get("someNested").value.asDate.orDefault(defDate1),
-    defDate1
+    defDate1,
   );
 
   // non-sxists
   assertEquals(
     config.get("somethingOther").value.asDate.orDefault(defDate1),
-    defDate1
+    defDate1,
   );
   assertEquals(
     config.get("somethingOther").value.asDate.orDefault(defDate2),
-    defDate2
+    defDate2,
   );
 });
 
 Deno.test(".value.asDate.nullable", () => {
   assertEquals(
     config.get("someISODate").value.asDate.nullable,
-    new Date("2022-02-14T14:48:32.439Z")
+    new Date("2022-02-14T14:48:32.439Z"),
   );
   assertEquals(config.get("someNumber").value.asDate.nullable, new Date(1));
 
@@ -81,16 +81,16 @@ Deno.test(".value.asDate.nullable", () => {
 Deno.test(".value.asDate.orThrow", () => {
   assertEquals(
     config.get("someISODate").value.asDate.orThrow,
-    new Date("2022-02-14T14:48:32.439Z")
+    new Date("2022-02-14T14:48:32.439Z"),
   );
   assertEquals(config.get("someNumber").value.asDate.orThrow, new Date(1));
 
   assertThrows(
     () => config.get("someString").value.asDate.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
   assertThrows(
     () => config.get("somethingOther").value.asDate.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
 });

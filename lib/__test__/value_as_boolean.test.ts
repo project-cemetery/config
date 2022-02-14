@@ -36,21 +36,21 @@ Deno.test(".value.asBoolean.orDefault", () => {
   assertEquals(config.get("falsy").value.asBoolean.orDefault(true), false);
   assertEquals(
     config.get("booleanStringTrue").value.asBoolean.orDefault(false),
-    true
+    true,
   );
   assertEquals(
     config.get("booleanStringFalse").value.asBoolean.orDefault(true),
-    false
+    false,
   );
 
   // non-sxists
   assertEquals(
     config.get("somethingOther").value.asBoolean.orDefault(true),
-    true
+    true,
   );
   assertEquals(
     config.get("somethingOther").value.asBoolean.orDefault(false),
-    false
+    false,
   );
 });
 
@@ -63,6 +63,6 @@ Deno.test(".value.asBoolean.orThrow", () => {
   assertEquals(config.get("thruthy").value.asBoolean.orThrow, true);
   assertThrows(
     () => config.get("somethingOther").value.asBoolean.orThrow,
-    ConfigurationException
+    ConfigurationException,
   );
 });
