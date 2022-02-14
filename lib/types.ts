@@ -12,18 +12,15 @@ export type Shape = <
     | Array<number>
   >
 >(
-  mapper: (config: { [key in string]: ConfigEntry }) => T,
+  mapper: (config: { [key in string]: ConfigEntry }) => T
 ) => T;
 
 export interface ConfigurationGetter {
-  key(key: string): ConfigEntry;
+  get(key: string): ConfigEntry;
   shape: Shape;
 }
 
-export interface Configuration extends ConfigurationGetter {
-  isDev: boolean;
-  isProd: boolean;
-}
+export type Configuration = ConfigurationGetter;
 
 export interface ConfigEntry {
   value: UnknownPrimitiveEntry;
@@ -50,11 +47,12 @@ export interface PrimitiveConfigEntry<T> {
 export interface UnknownArrayConfigEntry {
   ofBoolean: ArrayConfigEntry<boolean>;
   ofDate: ArrayConfigEntry<Date>;
-  ofNumber: ArrayConfigEntry<Number>;
+  ofNumber: ArrayConfigEntry<number>;
   ofString: ArrayConfigEntry<string>;
 }
 
 export interface ArrayConfigEntry<T> {
+  exists: boolean;
   orThrow: T[];
   orEmpty: T[];
   nullable: T[] | null;

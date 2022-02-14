@@ -1,6 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable prefer-const */
-
 import {
   Shape,
   Configuration,
@@ -10,16 +7,177 @@ import {
   PrimitiveConfigEntry,
   ArrayConfigEntry,
   UnknownArrayConfigEntry,
-} from './types';
+} from "./types.ts";
+import {
+  ConfigurationException,
+  ShapeConfigurationException,
+} from "./erorrs.ts";
 
-function createPrimitiveEntry<T>(
-  rawValue: unknown,
-  customMapper: (value: unknown) => T,
-  isEmpty: (rawValue: unknown, parsedValue: T) => boolean,
-): PrimitiveConfigEntry<T> {
-  const parsedValue = customMapper(rawValue);
+type ValueGetter = (key: string) => unknown;
+type ErrorHandler = (
+  error: ConfigurationException | ShapeConfigurationException
+) => void;
 
-  const shouldSkipValue = isEmpty(rawValue, parsedValue);
+export function createConfiguration(
+  record: Record<string, unknown> | ValueGetter
+): Configuration {
+  const getConfigShape: Shape = (callback) => {
+    const errors: Array<ShapeConfigurationException | ConfigurationException> =
+      [];
+
+    const result = callback(
+      new Proxy(
+        {},
+        {
+          get: (_, prop, __) =>
+            getConfigByKey(prop as any, { onError: (err) => errors.push(err) }),
+        }
+      )
+    );
+
+    if (errors.length > 0) {
+      const flattenErrors: Array<ConfigurationException> = [];
+
+      for (const err of errors) {
+        if (err instanceof ShapeConfigurationException) {
+          flattenErrors.push(...err.errors);
+        } else {
+          flattenErrors.push(err);
+        }
+      }
+
+      throw new ShapeConfigurationException(flattenErrors);
+    }
+
+    return result;
+  };
+
+  let getter: ValueGetter;
+  if (typeof record === "function") {
+    getter = record;
+  } else {
+    getter = (key) => record[key];
+  }
+
+  function getConfigByKey(
+    key: string,
+    { onError }: { onError?: ErrorHandler }
+  ): ConfigEntry {
+    const value = getter(key);
+
+    return {
+      get asIs(): unknown {
+        return value;
+      },
+      get value(): UnknownPrimitiveEntry {
+        return {
+          get asBoolean(): PrimitiveConfigEntry<boolean> {
+            return createPrimitiveEntry({
+              value,
+              parse: toBoolean,
+              isEmpty: checkEmpty,
+              onError,
+            });
+          },
+          get asDate(): PrimitiveConfigEntry<Date> {
+            return createPrimitiveEntry({
+              value,
+              parse: toDate,
+              isEmpty: checkEmptyDate,
+              onError,
+            });
+          },
+          get asNumber(): PrimitiveConfigEntry<number> {
+            return createPrimitiveEntry({
+              value,
+              parse: toNumber,
+              isEmpty: checkEmptyNumber,
+              onError,
+            });
+          },
+          get asString() {
+            return createPrimitiveEntry({
+              value,
+              parse: toString,
+              isEmpty: checkEmpty,
+              onError,
+            });
+          },
+        };
+      },
+      get asArray(): UnknownArrayConfigEntry {
+        return {
+          get ofNumber() {
+            return createArrayEntry({
+              value,
+              parse: toNumber,
+              isEmpty: checkEmptyNumber,
+              onError,
+            });
+          },
+          get ofBoolean() {
+            return createArrayEntry({
+              value,
+              parse: toBoolean,
+              isEmpty: checkEmpty,
+              onError,
+            });
+          },
+          get ofDate() {
+            return createArrayEntry({
+              value,
+              parse: toDate,
+              isEmpty: checkEmptyDate,
+              onError,
+            });
+          },
+          get ofString() {
+            return createArrayEntry({
+              value,
+              parse: toString,
+              isEmpty: checkEmpty,
+              onError,
+            });
+          },
+        };
+      },
+      get asNested(): ConfigurationGetter {
+        return {
+          get: (nestedKey) =>
+            createConfiguration(
+              getConfigByKey(key, { onError }).asIs as any
+            ).get(nestedKey),
+          shape: (config) =>
+            createConfiguration(
+              getConfigByKey(key, { onError }).asIs as any
+            ).shape(config),
+        };
+      },
+    };
+  }
+
+  return {
+    get(key: string) {
+      return getConfigByKey(key, {});
+    },
+    shape: getConfigShape,
+  };
+}
+
+function createPrimitiveEntry<T>({
+  value,
+  parse,
+  isEmpty,
+  onError,
+}: {
+  value: unknown;
+  parse: (value: unknown) => T;
+  isEmpty: (rawValue: unknown, parsedValue: T) => boolean;
+  onError?: ErrorHandler;
+}): PrimitiveConfigEntry<T> {
+  const parsedValue = parse(value);
+
+  const shouldSkipValue = isEmpty(value, parsedValue);
 
   return {
     get exists() {
@@ -33,7 +191,13 @@ function createPrimitiveEntry<T>(
     },
     get orThrow() {
       if (shouldSkipValue) {
-        throw new Error('SHIT');
+        const error = new ConfigurationException();
+
+        if (onError) {
+          onError(error);
+        } else {
+          throw error;
+        }
       }
 
       return parsedValue;
@@ -41,31 +205,46 @@ function createPrimitiveEntry<T>(
   };
 }
 
-function createArrayEntry<T>(
-  rawValue: unknown,
-  customMapper: (value: unknown) => T,
-  isEmpty: (rawValue: unknown, parsedValue: T) => boolean,
-): ArrayConfigEntry<T> {
+function createArrayEntry<T>({
+  value,
+  parse,
+  isEmpty,
+  onError,
+}: {
+  value: unknown;
+  parse: (value: unknown) => T;
+  isEmpty: (rawValue: unknown, parsedValue: T) => boolean;
+  onError?: ErrorHandler;
+}): ArrayConfigEntry<T> {
   let parsedValue: T[] = [];
 
-  if (Array.isArray(rawValue)) {
-    parsedValue = rawValue.map(customMapper);
-  } else if (typeof rawValue === 'string' && rawValue.includes(',')) {
-    parsedValue = rawValue.split(',').map(customMapper);
-  } else if (typeof rawValue === 'string' && rawValue.includes(';')) {
-    parsedValue = rawValue.split(';').map(customMapper);
-  } else if (typeof rawValue === 'string') {
-    parsedValue = [customMapper(rawValue)];
+  if (Array.isArray(value)) {
+    parsedValue = value.map(parse);
+  } else if (typeof value === "string" && value.includes(",")) {
+    parsedValue = value.split(",").map(parse);
+  } else if (typeof value === "string" && value.includes(";")) {
+    parsedValue = value.split(";").map(parse);
+  } else if (typeof value === "string") {
+    parsedValue = [parse(value)];
   }
 
-  parsedValue = parsedValue.filter((value) => !isEmpty(rawValue, value));
+  parsedValue = parsedValue.filter((value) => !isEmpty(value, value));
 
   const shouldSkipValue = parsedValue.length === 0;
 
   return {
+    get exists() {
+      return !shouldSkipValue;
+    },
     get orThrow() {
       if (shouldSkipValue) {
-        throw new Error('hati');
+        const error = new ConfigurationException();
+
+        if (onError) {
+          onError(error);
+        } else {
+          throw error;
+        }
       }
 
       return parsedValue;
@@ -83,11 +262,15 @@ function createArrayEntry<T>(
 }
 
 function checkEmpty(value: unknown) {
-  return typeof value === 'undefined' || value === null || value === '';
+  return typeof value === "undefined" || value === null || value === "";
 }
 
 function checkEmptyDate(value: unknown, dateValue: Date) {
-  return checkEmpty(value) || Number.isNaN(dateValue.valueOf());
+  return (
+    checkEmpty(value) ||
+    typeof value === "boolean" ||
+    Number.isNaN(dateValue.valueOf())
+  );
 }
 
 function checkEmptyNumber(value: unknown, numericValue: number) {
@@ -95,7 +278,7 @@ function checkEmptyNumber(value: unknown, numericValue: number) {
 }
 
 function toBoolean(value: unknown): boolean {
-  if (value === 'false') {
+  if (value === "false") {
     return false;
   }
 
@@ -115,86 +298,9 @@ function toNumber(value: unknown) {
 }
 
 function toString(value: unknown) {
-  return String(value);
-}
-
-export function createConfiguration(
-  record: Record<string, unknown>,
-): Configuration {
-  const getConfigShape: Shape = (callback) =>
-    callback(
-      new Proxy(
-        {},
-        {
-          get: (_1, prop, _2) => getConfigByKey(prop as any),
-        },
-      ),
-    );
-
-  function getConfigByKey(key: string): ConfigEntry {
-    return {
-      get asIs(): unknown {
-        return record[key];
-      },
-      get value(): UnknownPrimitiveEntry {
-        return {
-          get asBoolean(): PrimitiveConfigEntry<boolean> {
-            return createPrimitiveEntry(record[key], toBoolean, checkEmpty);
-          },
-          get asDate(): PrimitiveConfigEntry<Date> {
-            return createPrimitiveEntry(record[key], toDate, checkEmptyDate);
-          },
-          get asNumber(): PrimitiveConfigEntry<number> {
-            return createPrimitiveEntry(
-              record[key],
-              toNumber,
-              checkEmptyNumber,
-            );
-          },
-          get asString(): any {
-            return createPrimitiveEntry(record[key], toString, checkEmpty);
-          },
-        };
-      },
-      get asArray(): UnknownArrayConfigEntry {
-        return {
-          get ofNumber() {
-            return createArrayEntry(record[key], toNumber, checkEmptyNumber);
-          },
-          get ofBoolean() {
-            return createArrayEntry(record[key], toBoolean, checkEmpty);
-          },
-          get ofDate() {
-            return createArrayEntry(record[key], toDate, checkEmptyDate);
-          },
-          get ofString() {
-            return createArrayEntry(record[key], toString, checkEmpty);
-          },
-        };
-      },
-      get asNested(): ConfigurationGetter {
-        return {
-          key: (nestedKey) =>
-            createConfiguration(getConfigByKey(key).asIs as any).key(nestedKey),
-          shape: (config) =>
-            createConfiguration(getConfigByKey(key).asIs as any).shape(config),
-        };
-      },
-    };
+  if (typeof value === "object") {
+    return JSON.stringify(value);
   }
 
-  const env = getConfigByKey('NODE_ENV').value.asString.orDefault(
-    'development',
-  );
-
-  return {
-    key: getConfigByKey,
-    shape: getConfigShape,
-    get isDev() {
-      return env === 'development';
-    },
-    get isProd() {
-      return env === 'production';
-    },
-  };
+  return String(value);
 }

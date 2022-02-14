@@ -1,7 +1,0 @@
-.yarn
-node_modules
-.pnp.js
-.vscode
-node_modules
-*.log
-dist
