@@ -39,7 +39,7 @@ export interface UnknownPrimitiveEntry {
 export interface PrimitiveConfigEntry<T> {
   exists: boolean;
 
-  orDefault(def: T): T;
+  orDefault(def: T | (() => T)): T;
   nullable: T | null;
   orThrow: T;
 }

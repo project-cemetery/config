@@ -184,7 +184,15 @@ function createPrimitiveEntry<T>({
       return !shouldSkipValue;
     },
     orDefault(def: T) {
-      return shouldSkipValue ? def : parsedValue;
+      if (!shouldSkipValue) {
+        return parsedValue;
+      }
+
+      if (typeof def === "function") {
+        return def();
+      }
+
+      return def;
     },
     get nullable() {
       return shouldSkipValue ? null : parsedValue;
