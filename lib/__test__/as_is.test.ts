@@ -1,6 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.100.0/testing/asserts.ts";
 
-import { createConfiguration } from "../create_configuration.ts";
+import { createConfiguration } from "../create.ts";
 
 const config = createConfiguration({
   someString: "value",

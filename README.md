@@ -48,7 +48,7 @@ const configFromDictionary = createConfiguration((key: string) => {
 });
 ```
 
-### API
+### Configuration API
 
 Any factory creates a single `Configuration` object that can be used for
 parsing, validating and manipulating configuration.
@@ -158,3 +158,16 @@ const { appPort, redisPassword, telegramKey, kafkaBrokers } = config.shape(
 It can be used for validation app configuration. This method will throw
 `ShapeConfigurationError` if one of shape's members will throw
 `ConfigurationError`.
+
+### Configuration merge
+
+You can merge any amount of configs:
+
+```ts
+const firstConfig = createEnvConfiguration();
+const secondConfig = createConfiguration({ IS_DEV: false });
+
+// It contains all variables from environment variables from firstConfig
+// and additional params from secondConfig
+const config = mergeConfigurations(firstConfig, secondConfig);
+```

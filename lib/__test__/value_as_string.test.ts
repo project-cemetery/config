@@ -3,7 +3,7 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.100.0/testing/asserts.ts";
 
-import { createConfiguration } from "../create_configuration.ts";
+import { createConfiguration } from "../create.ts";
 import { ConfigurationException } from "../erorrs.ts";
 
 const config = createConfiguration({
