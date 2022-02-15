@@ -145,7 +145,7 @@ You can create an object with all required pieces of configuration by one call:
 
 ```ts
 const { appPort, redisPassword, telegramKey, kafkaBrokers } = config.shape(
-  // each field of callbacl argument contain result of `.get(key)` call
+  // each field of callback argument contains result of `.get(key)` call
   ({ PORT, REDIS_PASSWORD, TELEGRAM_KEY, KAFKA_BROKERS }) => ({
     appPort: PORT.value.asNumber.orDefault(4000),
     redisPassword: REDIS_PASSWORD.value.asString.orThrow,
