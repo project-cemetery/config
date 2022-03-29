@@ -1,170 +1,173 @@
-# @solid-soda/config
+# denfig
 
-[![Scripts sets up by @solid-soda/scripts v2.1.0](https://img.shields.io/static/v1?label=@solid-soda/scripts&message=2.1.0&color=75ddf4)](https://github.com/solid-soda/scripts)
+Simple and powerful solution for managing configuration for Deno applications.
+It allows you to parse, validate and transform various formats of configuration.
 
-Provides several classes to help you find, load, combine, autofill and validate configuration values of any kind.
-
-Why this library:
-
-- simple way to configure application
-- don't read or rewrite global object (like `process.env`) in an app
-- different configs for different environments
-- friendly for DI containers
+> This package is suitable only for Deno since v3 release. If you want to use it
+> with Node.js consider using
+> [v2](https://github.com/igorkamyshev/denfig/tree/v2-node).
 
 ## Installation
 
-`yarn add @solid-soda/config`
+```ts
+// Import from Deno's third party module registry
+import { createEnvConfiguration } from "https://deno.land/x/denfig@3.0.0/lib.ts";
 
-## TL;DR
-
-In example app we want to use `DotEnvConfiguration` in dev environment and `EnvConfiguraton` in production. Just create a simple factory function:
-
-```js
-import { CommonConfiguraton } from '@solid-soda/config';
-
-export const config = new CommonConfiguraton('../.env');
+// Import from GitHub
+import { createEnvConfiguration } from "https://raw.githubusercontent.com/igorkamyshev/denfig/3.0.0/lib.ts";
 ```
 
-That is all. We can use `config` in any place of our application, or pass the result to DI container, etc. It uses `DotEnvConfiguration` in dev-mode and `EnvConfiguration` in prod-mode.
+## Usage
 
-```js
-import { config } from './config';
+### Environment configuration
 
-const secret = config.getOrElse('APP_SECRET', 'DefaultSecret');
+In common case, application gets configuration from environment variables thru
+`Deno.env` calls, you can hide this detail:
+
+```ts
+import { createEnvConfiguration } from "https://deno.land/x/denfig@3.0.0/lib.ts";
+
+// config is using environment variables as a source of true
+const config = createEnvConfiguration();
 ```
 
-## Basics
+### Abstract configuration
 
-Every configuration implements `Configuration` interface.
+You can use you own configuration provider:
 
-> `@solid-soda/config` uses [nanoption](https://github.com/igorkamyshev/nanoption) for nullable values
+```ts
+import { createConfiguration } from "https://deno.land/x/denfig@3.0.0/lib.ts";
 
-```js
-import { Option } from 'nanoption'
+// config is using argument dictionary as a source of true
+const configFromDictionary = createConfiguration({ REDIS_PASSWORD: "qwerty" });
 
-interface Configuration {
-  get(key: string): Option<string>
-  getString(key: string): Option<string>
-  getNumber(key: string): Option<number>
-  getBoolean(key: string): Option<boolean>
-  getDate(key: string): Option<Date>
-
-  getOrElse(key: string, or: string): string
-  getStringOrElse(key: string, or: string): string
-  getNumberOrElse(key: string, or: number): number
-  getBooleanOrElse(key: string, or: boolean): boolean
-  getDateOrElse(key: string, or: Date): Date
-
-  getOrThrow(key: string): string
-  getStringOrThrow(key: string): string
-  getNumberOrThrow(key: string): number
-  getBooleanOrThrow(key: string): boolean
-  getDateOrThrow(key: string): Date
-
-  isDev(): boolean
-  isProd(): boolean
-}
-```
-
-Method `*OrThrow` throws `ParameterNotFound` exception, if a value for the provided key is empty.
-
-## Load configs
-
-Library provides classes for comfortable loading of configs from different sources.
-
-#### CommonConfiguration
-
-uses `.env` file in dev-mode and `process.env` in prod-mode. Built over `DotEnvConfiguration` and `EnvConfiguraton`.
-
-Example:
-
-```js
-import { CommonConfiguration } from '@solid-soda/config';
-
-// pass .env file path for dev-mode, in prod-mode will be ignored
-const config = new CommonConfiguration('./configs/.env');
-```
-
-#### DotEnvConfiguration
-
-uses `.env` file to load configuration. Built over great [dotenv](https://github.com/motdotla/dotenv) lib.
-
-Example:
-
-```js
-import { DotEnvConfiguration } from '@solid-soda/config';
-
-const config = new DotEnvConfiguration('./configs/.env');
-```
-
-#### EnvConfiguraton
-
-uses `process.env` to load configuration.
-
-Example:
-
-```js
-import { EnvConfiguration } from '@solid-soda/config';
-
-const config = new EnvConfiguration();
-```
-
-#### ExternalConfiguration
-
-uses plain object as configuration source.
-
-```js
-import { ExternalConfiguration } from '@solid-soda/config';
-
-const config = new ExternalConfiguration({
-  apiToken: 'jkfdshfk323.fjkhdksf.aodsa34',
-  applySecurity: true,
+// config will call callback with particular key for each configuration piece
+const configFromDictionary = createConfiguration((key: string) => {
+  // ...
+  return null;
 });
 ```
 
-#### FileConfiguration
+### Configuration API
 
-can accept any file as configuration. You must pass `fileParse` as second argument to parse file.
+Any factory creates a single `Configuration` object that can be used for
+parsing, validating and manipulating configuration.
 
-```js
-import { FileConfiguration, jsonParse } from '@solid-soda/config';
+#### `.get(key).value`
 
-const config = new FileConfiguration('./configs/params.json', jsonParse);
+You can extract single piece of config by particular key with this method:
+
+```ts
+const entry = config.get("PORT").value;
 ```
 
-##### Available parsers
+It returns `UnknownPrimitiveEntry` that can be parsed in many ways:
 
-- `jsonParse`
+- `.asNumebr` contains `PrimitiveConfigEntry` with `number`;
+- `.asString` contains `PrimitiveConfigEntry` with `string`;
+- `.asBoolean` contains `PrimitiveConfigEntry` with `boolean`;
+- `.asDate`contains`PrimitiveConfigEntry` with `Date`.
 
-Also you can create the custom parser. It must be a function `(file: stirng) => ConfigDict`, where `ConfigDict` is object with string keys and string or undefined values.
+You can cast any `PrimitiveConfigEntry` to primitive value by one of the next
+methods:
 
-### Custom configuration
+- `.exists` returns `true` for non-empty entry and returns `false` for empty
+  entry;
+- `.orDefault(def)` returns entry and uses default value in case of absent
+  entry;
+- `.nullable` returns entry or `null` in case of absent entry;
+- `.orThrow` returns entry or throws `ConfigurationExceptions` in case of absent
+  entry;
 
-Of course, you can create the custom Configuration. Just implement `Configuration` interface and use it.
+Example:
 
-Also, you can extend helper class `AbstractConfiguration` and implement only `get` and `isDev` methods.
+```ts
+const config = createConfiguration({ PORT: "8080" });
 
-The following configuration has no values and always returns empty `Option`.
-
-```js
-
-import { AbstractConfiguration } from '@solid-soda/config'
-
-class NeverConfiguration extends AbstractConfiguration {
-  public get = (key: string) => Option.of(null)
-
-  public isDev = () => true
-}
+// appPort's value is 8080, it has type "number"
+const appPort = config.get("PORT").value.asNumber.orDefault(4000);
 ```
 
-## Combine configs
+#### `.get(key).asArray`
 
-Work in progress
+You can extract many pieces of config by particular key with this method:
 
-## Validate configs
+```ts
+const entry = config.get("PORT").asArray;
+```
 
-Work in progress
+It returns `UnknownArrayConfigEntry` that can be parsed in many ways:
 
-## Autofill configs
+- `.ofNumebr` contains `ArrayConfigEntry` with array of `number`;
+- `.ofString` contains `ArrayConfigEntry` with array of `string`;
+- `.ofBoolean` contains `ArrayConfigEntry` with array of `boolean`;
+- `.ofDate` contains `ArrayConfigEntry` with array of `Date`.
 
-Work in progress
+You can cast any `ArrayConfigEntry` to array of primitive values by one of the
+next methods:
+
+- `.exists` returns `true` for non-empty entry and returns `false` for empty
+  entry;
+- `.orEmpty` returns array of entries or empty array;
+- `.nullable` returns array of entries or `null` in case of absent entries;
+- `.orThrow` returns enarray of entries or throws `ConfigurationExceptions` in
+  case of absent entries;
+
+> `ArrayConfigEntry` will parse a string divided by commas and semicolons.
+
+Example:
+
+```ts
+const config = createConfiguration({
+  KAFKA_BROKERS: "br.kafka1.int:8080,br.kafka2.int:8080,br.kafka3.int:8080",
+});
+
+// brokers's value is ["br.kafka1.int:8080", "br.kafka2.int:8080", "br.kafka3.int:8080"]
+const brokers = config.get("KAFKA_BROKERS").asArray.ofString.orEmpty;
+```
+
+#### `.get(key).asNested`
+
+You can extract sub-tree of configuration tree by particular key with this
+method:
+
+```ts
+cosnt config = createConfiguration({ redig: { password: 'qwerty', port: 1337 }});
+
+const redisConfig = config.get('redis').asNested;
+```
+
+It returns plain `Configuration`-object with subset of entries.
+
+#### `.shape(callback)`
+
+You can create an object with all required pieces of configuration by one call:
+
+```ts
+const { appPort, redisPassword, telegramKey, kafkaBrokers } = config.shape(
+  // each field of callback argument contains result of `.get(key)` call
+  ({ PORT, REDIS_PASSWORD, TELEGRAM_KEY, KAFKA_BROKERS }) => ({
+    appPort: PORT.value.asNumber.orDefault(4000),
+    redisPassword: REDIS_PASSWORD.value.asString.orThrow,
+    telegramKey: TELEGRAM_KEY.value.asString.orThrow,
+    kafkaBrokers: KAFKA_BROKERS.asArray.ofString.orEmpty,
+  }),
+);
+```
+
+It can be used for validation app configuration. This method will throw
+`ShapeConfigurationError` if one of shape's members will throw
+`ConfigurationError`.
+
+### Configuration merge
+
+You can merge any amount of configs:
+
+```ts
+const firstConfig = createEnvConfiguration();
+const secondConfig = createConfiguration({ IS_DEV: false });
+
+// It contains all variables from environment variables from firstConfig
+// and additional params from secondConfig
+const config = mergeConfigurations(firstConfig, secondConfig);
+```

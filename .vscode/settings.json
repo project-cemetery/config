@@ -1,5 +1,5 @@
 {
-  "eslint.nodePath": ".vscode/pnpify",
-  "prettier.prettierPath": ".vscode/pnpify/prettier/index.js",
-  "typescript.tsdk": ".vscode/pnpify/typescript/lib"
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": false
 }
